@@ -1,0 +1,91 @@
+|p1 p2 deck|
+Transcript clear.
+
+p1 := OrderedCollection new.
+p2 := OrderedCollection new.
+deck := OrderedCollection new.
+
+1 to: 4 do: [ :na |
+	1 to: 13 do: [ :i | 
+		deck add: i ]].
+
+Transcript show: deck;cr.
+deck shuffle.
+Transcript show: deck;cr.
+
+deck replaceAll: 1 with: 14.
+
+deck withIndexDo: [ :item :i | (i rem: 2)=1 ifTrue: [p1 add: item ] ifFalse: [p2 add: item ]].
+
+Transcript show: deck;cr.
+Transcript show: p1;cr.
+Transcript show: p2.
+
+
+------------------------------------------------------------------------------------
+
+| deck p1 p2|
+Transcript clear.
+
+deck := #(10 11 12 13 1 2 3 4 5 6 7 8 9 10 11 12 13 1 2 3 4 5 6 7 8 9 10 11 12 13 1 2 3 4 5 6 7 8 9 10 11 12 13 1 2 3 4 5 6 7 8 9).
+
+p1 := OrderedCollection new.
+p2 := OrderedCollection new.
+
+deck withIndexDo: [ :item :i | (i rem: 2)=1 ifTrue: [p1 add: item ] ifFalse: [p2 add: item ]].
+
+p1 replaceAll: 1 with: 14.
+p2 replaceAll: 1 with: 14.
+(p1 first) = (p2 first) ifTrue:  [Transcript show: 'tie' ].
+(p1 first) > (p2 first) ifTrue: [ Transcript show: 'p1' ] ifFalse: [ Transcript show: 'p2' ].
+
+Transcript show: p1;cr.
+Transcript show: p2;cr.
+
+p1 addAll: p2.
+
+Transcript show: p1.
+
+----------------------------------------------------------------------------------------
+
+|deck u |
+deck:= OrderedCollection new.
+1 to: 4 do: [ :na |
+	1 to: 13 do: [ :i | 
+		deck add: i ]].
+deck := deck shuffled.
+
+u := War deal: deck.
+Transcript clear.
+Transcript show: deck asArray ;cr;show: u;cr.
+
+---------------------------------------------------------------------------------------
+
+
+
+
+| shuffling should_be you_said |
+
+Transcript clear.
+
+	shuffling := #(4 4 13 6 12 6 2 10 7 8 6 1 12 3 11 11 11 13 9 5 8 3 10 8 1 
+		13 3 1 10 5 3 10 7 2 13 12 4 7 12 6 7 8 9 1 5 4 5 2 9 11 2 9).
+		
+	should_be := #(1 12 10 3 12 11 1 10 13 7 13 7 10 5 13 6 12 4 10 8 9 6 4 3 3 2 
+		1 12 11 8 11 4 9 2 8 7 7 5 11 5 9 4 6 2 6 3 5 2 1 9 13 8).
+		
+	you_said := War deal: shuffling.
+	
+	Transcript show: you_said;cr.
+	you_said = should_be 
+	ifTrue: [ 
+		Transcript show: 'Test '; show: ': PASSED'; cr.
+	]
+	ifFalse: [ 
+		Transcript show: 'Test '; show: ': FAILED'; cr.
+	].
+
+
+
+--------------------------------------------------------------------------------
+

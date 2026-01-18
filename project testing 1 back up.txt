@@ -1,0 +1,163 @@
+| deck g|
+Transcript clear.
+
+deck := #(1 13 1 13 1 13 1 13 12 11 12 11 12 11 12 11 10 9 10 9 10 9 10 9 8 7 8 7 8 7 8 7 6 5 6 5 6 5 6 5 4 3 4 3 4 3 4 3 2 2 2 2).
+
+g := War deal: deck.
+
+Transcript show: g.
+
+
+
+-----------------------------------
+
+Object subclass: #War
+	instanceVariableNames: 'deck1 p2 pw1 pw2'
+	classVariableNames: ''
+	package: 'CPS506'
+
+I represent a game played between two players that each recieve 26 cards. This game is won by one player winning all the cards; therefore, the player with zero cards is the loser of the game.
+ 
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	deck:		<Object> Holds the intial deck gives through the Playground
+	p1:		<Object> Holds the deck of player 1
+	p2:		<Object> Holds the deck of player 2
+	rArray:	<Object> The array of cards for each round that the winner will put at the bottom of their deck.
+    Implementation Points
+
+
+-------------------------------------------
+
+deal: deck
+			
+| obj result |
+obj := self new.
+obj setDeck: deck.
+result := (obj getWinDeck) asArray.
+Transcript show: 'windeck before transforming: '; show: result;cr.
+result replaceAll: 14 with: 1.
+Transcript show: 'windeck after transforming: '; show: result;cr.
+^result
+
+--------------------------------------------------
+
+addToArray
+
+Transcript show: 'addToArray';cr.
+
+rArray add: p1 first.
+rArray add: p2 first.
+p1 removeFirst.
+p2 removeFirst.
+Transcript show: 'rArray' ; show: rArray.
+
+---------------------------------------------
+
+
+empty
+
+	((p1 isEmpty) and: [p2 isEmpty]) ifTrue: [ 
+		winDeck addAll: rArray.
+		^nil ].
+	
+	p2 isEmpty ifTrue: [ 
+		winDeck:=p1. 
+		winDeck addAll: rArray.
+		^nil].
+	
+	p1 isEmpty ifTrue: [ 
+		winDeck:=p2. 
+		winDeck addAll: rArray.
+		^nil].
+^nil
+
+-----------------------------------------------------
+
+getDeck
+
+^deck
+
+--------------------------------------------------------
+
+getP1
+
+^p1
+
+--------------------------------------------------------
+
+getP2
+
+^p2
+
+-----------------------------------------------------------------------------
+
+getWinDeck
+^winDeck
+
+------------------------------------------------------------
+
+setDeck: cards
+
+Transcript show: 'setDeck';cr.
+
+deck := cards reversed.
+p1 := OrderedCollection new.
+p2 := OrderedCollection new. 
+rArray := SortedCollection sortBlock: [:a :c | a > c].
+winDeck := OrderedCollection new.
+
+"The below code gives each player 26 cards by going through the deck one by one."
+deck withIndexDo: [ :item :i | (i rem: 2)=1 ifTrue: [p1 add: item ] ifFalse: [p2 add: item ]].
+
+"The two lines below converts all the 1(Aces) to 14 so it's easier to check rank later."
+p1 replaceAll: 1 with: 14.
+p2 replaceAll: 1 with: 14.
+
+Transcript show: self getDeck ; cr.
+Transcript show: self getP1 ; cr.
+Transcript show: self getP2 ; cr.
+
+^self startGame
+
+---------------------------------------------------------
+
+startGame
+
+	Transcript show: 'startGame';cr.
+	
+	((p1 isEmpty) or: [p2 isEmpty]) ifTrue: [ ^self empty ].
+	
+	rArray isNotEmpty ifTrue: [ self addToArray. ].
+	
+	((p1 isEmpty) or: [p2 isEmpty]) ifTrue: [ ^self empty ].
+	
+	p1 first = p2 first ifTrue: [ 
+		self addToArray.
+		Transcript show: 'tie';cr.
+		Transcript show: self getP1 ; cr.
+Transcript show: self getP2 ; cr.
+		^self startGame].
+	
+	p1 first > p2 first ifTrue: [ 
+		self addToArray.
+		Transcript show: 'p1 won';cr.
+		p1 addAll: rArray.
+		rArray removeAll. 
+		Transcript show: self getP1 ; cr.
+Transcript show: self getP2 ; cr.
+		^self startGame].
+
+	p1 first < p2 first ifTrue: [ 
+		self addToArray.
+		Transcript show: 'p2 won';cr.
+		p2 addAll: rArray.
+		rArray removeAll.
+		Transcript show: self getP1 ; cr.
+Transcript show: self getP2 ; cr.
+		^self startGame].
+^nil
+
+-------------------------------------------------------------
+
